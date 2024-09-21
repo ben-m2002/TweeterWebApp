@@ -3,7 +3,8 @@ import StatusItem from "../statusItem/statusItem";
 import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import { useContext, useEffect, useState } from "react";
-import { UserInfoContext } from "../userInfo/UserInfoProvider";
+import useUserInfo from "../userInfo/UserInfoHook";
+//import { UserInfoContext } from "../userInfo/UserInfoProvider";
 const PAGE_SIZE = 10;
 
 interface Props {
@@ -25,7 +26,7 @@ const StatusItemScroller = ({ itemsDescription, loadMore }: Props) => {
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
   const addItems = (newItems: Status[]) => setNewItems(newItems);
   const { displayedUser, setDisplayedUser, currentUser, authToken } =
-    useContext(UserInfoContext);
+    useUserInfo();
 
   // Initialize the component whenever the displayed user changes
   useEffect(() => {

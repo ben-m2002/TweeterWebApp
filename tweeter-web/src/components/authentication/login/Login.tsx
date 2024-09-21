@@ -1,7 +1,7 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { SetStateAction, useCallback, useContext } from "react";
-import { UserInfoContext } from "../../userInfo/UserInfoProvider";
+//import { UserInfoContext } from "../../userInfo/UserInfoProvider";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
@@ -9,6 +9,7 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useAliasPassword from "../UseAliasPasswordHook.js";
+import useUserInfo from "../../userInfo/UserInfoHook";
 
 interface Props {
   originalUrl?: string;
@@ -21,7 +22,7 @@ const Login = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { updateUserInfo } = useContext(UserInfoContext);
+  const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {

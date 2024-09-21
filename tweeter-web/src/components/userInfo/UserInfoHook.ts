@@ -1,6 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
-import { useContext } from "react";
-import { UserInfoContext } from "./UserInfoProvider";
+import userHook from "./UserHook";
 
 interface UserInfoProps {
   currentUser: User | null;
@@ -16,7 +15,7 @@ interface UserInfoProps {
   setDisplayedUser: (user: User) => void;
 }
 
-const useUserInfo = (userId: string): UserInfoProps => {
+const useUserInfo = (): UserInfoProps => {
   const {
     currentUser,
     displayedUser,
@@ -24,7 +23,7 @@ const useUserInfo = (userId: string): UserInfoProps => {
     updateUserInfo,
     clearUserInfo,
     setDisplayedUser,
-  } = useContext(UserInfoContext);
+  } = userHook();
   return {
     currentUser,
     displayedUser,
@@ -34,3 +33,5 @@ const useUserInfo = (userId: string): UserInfoProps => {
     setDisplayedUser,
   };
 };
+
+export default useUserInfo;

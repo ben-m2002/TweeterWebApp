@@ -1,15 +1,16 @@
 import "./AppNavbar.css";
 import { useContext } from "react";
-import { UserInfoContext } from "../userInfo/UserInfoProvider";
+//import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import { AuthToken } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
+import useUserInfo from "../userInfo/UserInfoHook";
 
 const AppNavbar = () => {
   const location = useLocation();
-  const { authToken, clearUserInfo } = useContext(UserInfoContext);
+  const { authToken, clearUserInfo } = useUserInfo();
   const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -23,7 +24,7 @@ const AppNavbar = () => {
       clearUserInfo();
     } catch (error) {
       displayErrorMessage(
-        `Failed to log user out because of exception: ${error}`
+        `Failed to log user out because of exception: ${error}`,
       );
     }
   };

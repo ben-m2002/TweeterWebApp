@@ -1,16 +1,16 @@
 import { AuthToken, FakeData, Status, User, Type } from "tweeter-shared";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { UserInfoContext } from "../userInfo/UserInfoProvider";
+//import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import useToastListener from "../toaster/ToastListenerHook";
+import useUserInfo from "../userInfo/UserInfoHook";
 
 interface Props {
   status: Status;
 }
 
 const Post = (props: Props) => {
-  const { setDisplayedUser, currentUser, authToken } =
-    useContext(UserInfoContext);
+  const { setDisplayedUser, currentUser, authToken } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
@@ -40,7 +40,7 @@ const Post = (props: Props) => {
 
   const getUser = async (
     authToken: AuthToken,
-    alias: string
+    alias: string,
   ): Promise<User | null> => {
     // TODO: Replace with the result of calling server
     return FakeData.instance.findUserByAlias(alias);
@@ -70,7 +70,7 @@ const Post = (props: Props) => {
           <br key={index} />
         ) : (
           segment.text
-        )
+        ),
       )}
     </>
   );
