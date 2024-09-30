@@ -17,6 +17,9 @@ import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import statusItemScroller from "./components/mainLayout/StatusItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import useUserInfo from "./components/userInfo/UserInfoHook";
+import { FolloweePresenter } from "./presenter/FolloweePresenter";
+import { UserItemView } from "./presenter/UserItemPresenter";
+import { FollowerPresenter } from "./presenter/FollowerPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -40,24 +43,13 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreFollowers = async (
+  const loadMoreFeedItems = async (
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
-    lastItem: User | null,
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
-  };
-
-  const loadMoreFollowees = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: User | null,
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    lastItem: Status | null,
+  ): Promise<[Status[], boolean]> => {
+    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   };
 
   const loadMoreStoryItems = async (
@@ -66,16 +58,6 @@ const AuthenticatedRoutes = () => {
     pageSize: number,
     lastItem: Status | null,
   ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null,
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
     return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   };
 
@@ -108,8 +90,9 @@ const AuthenticatedRoutes = () => {
           element={
             <UserItemScroller
               key={1}
-              loadItems={loadMoreFollowees}
-              itemDescription="followees"
+              presenterGenerator={(view: UserItemView) =>
+                new FolloweePresenter(view)
+              }
             />
           }
         />
@@ -118,8 +101,9 @@ const AuthenticatedRoutes = () => {
           element={
             <UserItemScroller
               key={2}
-              loadItems={loadMoreFollowers}
-              itemDescription="followers"
+              presenterGenerator={(view: UserItemView) =>
+                new FollowerPresenter(view)
+              }
             />
           }
         />
