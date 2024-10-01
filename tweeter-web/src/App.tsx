@@ -20,6 +20,9 @@ import useUserInfo from "./components/userInfo/UserInfoHook";
 import { FolloweePresenter } from "./presenter/FolloweePresenter";
 import { UserItemView } from "./presenter/UserItemPresenter";
 import { FollowerPresenter } from "./presenter/FollowerPresenter";
+import { StatusItemView } from "./presenter/StatusItemPresenter";
+import { FeedPresenter } from "./presenter/FeedPresenter";
+import { StoryPresenter } from "./presenter/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -43,24 +46,6 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null,
-  ): Promise<[Status[], boolean]> => {
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null,
-  ): Promise<[Status[], boolean]> => {
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
   return (
     <Routes>
       <Route element={<MainLayout />}>
@@ -70,8 +55,9 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               key={1}
-              itemsDescription={"feed"}
-              loadMore={loadMoreFeedItems}
+              generatePresenter={(view: StatusItemView) =>
+                new FeedPresenter(view)
+              }
             />
           }
         />
@@ -80,8 +66,9 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               key={2}
-              itemsDescription={"story"}
-              loadMore={loadMoreStoryItems}
+              generatePresenter={(view: StatusItemView) =>
+                new StoryPresenter(view)
+              }
             />
           }
         />
