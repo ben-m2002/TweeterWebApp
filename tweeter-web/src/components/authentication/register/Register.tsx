@@ -11,21 +11,30 @@ import useToastListener from "../../toaster/ToastListenerHook";
 import useAliasPassword from "../UseAliasPasswordHook.js";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
+import {
+  RegisterPresenter,
+  RegisterView,
+} from "../../../presenter/RegisterPresenter";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const { alias, password, setAliasCallback, setPasswordCallback } =
     useAliasPassword();
-  const [imageBytes, setImageBytes] = useState<Uint8Array>(new Uint8Array());
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [imageFileExtension, setImageFileExtension] = useState<string>("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
+
+  const listener: RegisterView = {
+    setImageUrl: setImageUrl,
+    displayErrorMessage: displayErrorMessage,
+    updateUserInfo: updateUserInfo,
+    navigate: navigate,
+  };
+
+  const [presenter] = useState(() => new RegisterPresenter(listener));
 
   const checkSubmitButtonStatus = (): boolean => {
     return (
@@ -34,7 +43,7 @@ const Register = () => {
       !alias ||
       !password ||
       !imageUrl ||
-      !imageFileExtension
+      !presenter.imageFileExtension
     );
   };
 
@@ -50,85 +59,11 @@ const Register = () => {
   };
 
   const handleImageFile = (file: File | undefined) => {
-    if (file) {
-      setImageUrl(URL.createObjectURL(file));
-
-      const reader = new FileReader();
-      reader.onload = (event: ProgressEvent<FileReader>) => {
-        const imageStringBase64 = event.target?.result as string;
-
-        // Remove unnecessary file metadata from the start of the string.
-        const imageStringBase64BufferContents =
-          imageStringBase64.split("base64,")[1];
-
-        const bytes: Uint8Array = Buffer.from(
-          imageStringBase64BufferContents,
-          "base64",
-        );
-
-        setImageBytes(bytes);
-      };
-      reader.readAsDataURL(file);
-
-      // Set image file extension (and move to a separate method)
-      const fileExtension = getFileExtension(file);
-      if (fileExtension) {
-        setImageFileExtension(fileExtension);
-      }
-    } else {
-      setImageUrl("");
-      setImageBytes(new Uint8Array());
-    }
-  };
-
-  const getFileExtension = (file: File): string | undefined => {
-    return file.name.split(".").pop();
+    presenter.handleImageFile(file);
   };
 
   const doRegister = async () => {
-    try {
-      setIsLoading(true);
-
-      const [user, authToken] = await register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension,
-      );
-
-      updateUserInfo(user, user, authToken, rememberMe);
-      navigate("/");
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to register user because of exception: ${error}`,
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const register = async (
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    userImageBytes: Uint8Array,
-    imageFileExtension: string,
-  ): Promise<[User, AuthToken]> => {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
-
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, FakeData.instance.authToken];
+    await presenter.doRegister(firstName, lastName, alias, password);
   };
 
   const inputFieldGenerator = () => {
@@ -181,7 +116,7 @@ const Register = () => {
   const switchAuthenticationMethodGenerator = () => {
     return (
       <div className="mb-3">
-        Algready registered? <Link to="/login">Sign in</Link>
+        Already registered? <Link to="/login">Sign in</Link>
       </div>
     );
   };
@@ -193,9 +128,9 @@ const Register = () => {
       oAuthHeading="Register with:"
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
-      setRememberMe={setRememberMe}
+      setRememberMe={(value: boolean) => (presenter.rememberMe = value)}
       submitButtonDisabled={checkSubmitButtonStatus}
-      isLoading={isLoading}
+      isLoading={presenter.isLoading}
       submit={doRegister}
     />
   );
