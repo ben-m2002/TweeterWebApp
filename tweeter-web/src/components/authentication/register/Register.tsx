@@ -5,8 +5,6 @@ import { useContext } from "react";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
-import { Buffer } from "buffer";
 import useToastListener from "../../toaster/ToastListenerHook";
 import useAliasPassword from "../UseAliasPasswordHook.js";
 import AuthenticationFields from "../AuthenticationFields";
