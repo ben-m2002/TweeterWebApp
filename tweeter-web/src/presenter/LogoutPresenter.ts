@@ -20,22 +20,12 @@ export class LogoutPresenter extends Presenter<LogoutView> {
     return this._userService;
   }
 
-  set userService(value: UserService) {
-    this._userService = value;
-  }
-
   public async logOut(authToken: AuthToken) {
     this.view.displayInfoMessage("Logging Out...", 0);
-
-    try {
+    await this.doFailureReportOperation(async () => {
       await this.userService.logout(authToken!);
-
       this.view.clearLastInfoMessage();
       this.view.clearUserInfo();
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to log user out because of exception: ${error}`,
-      );
-    }
+    }, "log user out");
   }
 }

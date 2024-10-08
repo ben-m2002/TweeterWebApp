@@ -28,8 +28,7 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
     currentUser: User,
   ) {
     event.preventDefault();
-
-    try {
+    await this.doFailureReportOperation(async () => {
       this.view.setIsLoading(true);
       this.view.displayInfoMessage("Posting status...", 0);
 
@@ -39,13 +38,9 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
 
       this.view.setPost("");
       this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`,
-      );
-    } finally {
-      this.view.clearLastInfoMessage();
-      this.view.setIsLoading(false);
-    }
+    }, "post status");
+
+    this.view.clearLastInfoMessage();
+    this.view.setIsLoading(false);
   }
 }
