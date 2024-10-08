@@ -1,36 +1,17 @@
-import { UserService } from "../model/service/UserService";
 import { Buffer } from "buffer";
-import { useState } from "react";
-import { AuthToken, User } from "tweeter-shared";
+import { AuthPresenter, AuthView } from "./AuthPresenter";
 
-export interface RegisterView {
+export interface RegisterView extends AuthView {
   setImageUrl(url: string): void;
-  displayErrorMessage(message: string): void;
-  updateUserInfo(
-    currentUser: User,
-    displayedUser: User,
-    authToken: AuthToken,
-    remember: boolean,
-  ): void;
-  navigate(path: string): void;
 }
 
-export class RegisterPresenter {
-  private view: RegisterView;
-  private _userService: UserService;
-  private _isLoading = false;
+export class RegisterPresenter extends AuthPresenter<RegisterView> {
   private _imageBytes: Uint8Array = new Uint8Array();
   private _imageFileExtension: string = "";
-  private _rememberMe = false;
   private _imageUrl = "";
 
   constructor(view: RegisterView) {
-    this.view = view;
-    this._userService = new UserService();
-  }
-
-  get isLoading(): boolean {
-    return this._isLoading;
+    super(view);
   }
 
   get imageBytes(): Uint8Array {
@@ -47,26 +28,6 @@ export class RegisterPresenter {
 
   set imageFileExtension(value: string) {
     this._imageFileExtension = value;
-  }
-
-  set isLoading(value: boolean) {
-    this._isLoading = value;
-  }
-
-  get rememberMe(): boolean {
-    return this._rememberMe;
-  }
-
-  set rememberMe(value: boolean) {
-    this._rememberMe = value;
-  }
-
-  get imageUrl(): string {
-    return this._imageUrl;
-  }
-
-  set imageUrl(value: string) {
-    this._imageUrl = value;
   }
 
   private getFileExtension(file: File): string | undefined {
@@ -109,9 +70,9 @@ export class RegisterPresenter {
     alias: string,
     password: string,
   ) {
-    try {
+    await this.doFailureReportOperation(async () => {
       this.isLoading = true;
-      const [user, authToken] = await this._userService.register(
+      const [user, authToken] = await this.userService.register(
         firstName,
         lastName,
         alias,
@@ -121,12 +82,7 @@ export class RegisterPresenter {
       );
       this.view.updateUserInfo(user, user, authToken, this.rememberMe);
       this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`,
-      );
-    } finally {
-      this.isLoading = false;
-    }
+    }, "register user");
+    this.isLoading = false;
   }
 }

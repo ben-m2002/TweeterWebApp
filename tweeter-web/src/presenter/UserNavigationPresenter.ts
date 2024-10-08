@@ -1,29 +1,18 @@
 import { UserService } from "../model/service/UserService";
 import React from "react";
-import { Simulate } from "react-dom/test-utils";
-import error = Simulate.error;
 import { AuthToken, User } from "tweeter-shared";
+import { Presenter, View } from "./Presenter";
 
-export interface UserNavigationView {
+export interface UserNavigationView extends View {
   setDisplayedUser: (user: User) => void;
-  displayErrorMessage: (message: string) => void;
 }
 
-export class UserNavigationPresenter {
-  private _view: UserNavigationView;
+export class UserNavigationPresenter extends Presenter<UserNavigationView> {
   private _userService: UserService;
 
   constructor(view: UserNavigationView) {
-    this._view = view;
+    super(view);
     this._userService = new UserService();
-  }
-
-  get view(): UserNavigationView {
-    return this._view;
-  }
-
-  set view(value: UserNavigationView) {
-    this._view = value;
   }
 
   get userService(): UserService {
