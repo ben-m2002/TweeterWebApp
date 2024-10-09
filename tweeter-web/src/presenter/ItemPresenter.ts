@@ -1,6 +1,7 @@
 import { Presenter, View } from "./Presenter";
 import { AuthToken } from "tweeter-shared";
-import { FollowService } from "../model/service/FollowService";
+
+export const PAGE_SIZE: number = 10;
 
 export interface ItemView<T> extends View {
   addItems: (newItems: T[]) => void;
@@ -40,10 +41,32 @@ export abstract class ItemPresenter<T, U> extends Presenter<ItemView<T>> {
     this._service = service;
   }
 
-  public abstract loadMoreItems(
-    authToken: AuthToken | null,
-    userAlias: string | null,
-  ): Promise<void>;
+  public async loadMoreItems(
+    authToken: AuthToken,
+    userAlias: string,
+  ): Promise<void> {
+    const loadMoreItemsFunction = this.serviceLoadMoreItems();
+    await this.doFailureReportOperation(async () => {
+      const [newItems, hasMore] = await loadMoreItemsFunction(
+        authToken!,
+        userAlias!,
+        PAGE_SIZE,
+        this.lastItem,
+      );
+      this.hasMoreItems = hasMore;
+      this.lastItem = newItems[newItems.length - 1];
+      this.view.addItems(newItems);
+    }, this.getItemDescription());
+  }
+
+  protected abstract getItemDescription(): string;
+
+  protected abstract serviceLoadMoreItems(): (
+    authToken: AuthToken,
+    userAlias: string,
+    pageSize: number,
+    lastItem: T | null,
+  ) => Promise<[T[], boolean]>;
 
   public reset(): void {
     this._lastItem = null;

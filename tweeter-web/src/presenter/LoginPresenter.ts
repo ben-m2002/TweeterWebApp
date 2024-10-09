@@ -1,4 +1,5 @@
 import { AuthPresenter, AuthView } from "./AuthPresenter";
+import { AuthToken, User } from "tweeter-shared";
 
 export interface LoginView extends AuthView {}
 
@@ -8,18 +9,14 @@ export class LoginPresenter extends AuthPresenter<LoginView> {
   }
 
   public async doLogin(alias: string, password: string, originalUrl: string) {
-    await this.doFailureReportOperation(async () => {
-      this.isLoading = true;
+    await this.doAuthOperation(alias, password, originalUrl);
+  }
 
-      const [user, authToken] = await this.userService.login(alias, password);
+  protected authenticate(): Promise<[User, AuthToken]> {
+    return this.userService.login(this.alias, this.password);
+  }
 
-      this.view.updateUserInfo(user, user, authToken, this.rememberMe);
-
-      if (!!originalUrl) {
-        this.view.navigate(originalUrl);
-      } else {
-        this.view.navigate("/");
-      }
-    }, "log user in");
+  protected getAuthOperationDescription(): string {
+    return "login";
   }
 }

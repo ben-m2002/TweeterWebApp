@@ -16,6 +16,8 @@ export abstract class AuthPresenter<T extends AuthView> extends Presenter<T> {
   private _userService;
   private _isLoading = false;
   private _rememberMe: boolean = false;
+  private _alias: string = "";
+  private _password: string = "";
 
   constructor(view: T) {
     super(view);
@@ -30,6 +32,18 @@ export abstract class AuthPresenter<T extends AuthView> extends Presenter<T> {
     return this._rememberMe;
   }
 
+  get userService(): UserService {
+    return this._userService;
+  }
+
+  get alias(): string {
+    return this._alias;
+  }
+
+  get password(): string {
+    return this._password;
+  }
+
   set rememberMe(value: boolean) {
     this._rememberMe = value;
   }
@@ -38,7 +52,49 @@ export abstract class AuthPresenter<T extends AuthView> extends Presenter<T> {
     this._isLoading = value;
   }
 
-  get userService(): UserService {
-    return this._userService;
+  set alias(value: string) {
+    this._alias = value;
+  }
+
+  set password(value: string) {
+    this._password = value;
+  }
+
+  public async doAuthOperation(
+    alias: string,
+    password: string,
+    originalUrl: string,
+  ): Promise<void> {
+    await this.doFailureReportOperation(async () => {
+      this.isLoading = true;
+      this.alias = alias;
+      this.password = password;
+      const [user, authToken] = await this.authenticate();
+      this.view.updateUserInfo(user, user, authToken, this.rememberMe);
+      if (!!originalUrl) {
+        this.view.navigate(originalUrl);
+      } else {
+        this.view.navigate("/");
+      }
+    }, this.getAuthOperationDescription());
+    this.isLoading = false;
+  }
+
+  protected abstract authenticate(): Promise<[User, AuthToken]>;
+
+  protected abstract getAuthOperationDescription(): string;
+
+  public async doLogin(alias: string, password: string, originalUrl: string) {
+    await this.doFailureReportOperation(async () => {
+      this.isLoading = true;
+      const [user, authToken] = await this.userService.login(alias, password);
+      this.view.updateUserInfo(user, user, authToken, this.rememberMe);
+      if (!!originalUrl) {
+        this.view.navigate(originalUrl);
+      } else {
+        this.view.navigate("/");
+      }
+    }, "log user in");
+    this.isLoading = false;
   }
 }

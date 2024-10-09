@@ -1,5 +1,6 @@
 import { Buffer } from "buffer";
 import { AuthPresenter, AuthView } from "./AuthPresenter";
+import { AuthToken, User } from "tweeter-shared";
 
 export interface RegisterView extends AuthView {
   setImageUrl(url: string): void;
@@ -9,6 +10,8 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
   private _imageBytes: Uint8Array = new Uint8Array();
   private _imageFileExtension: string = "";
   private _imageUrl = "";
+  private _firstName: string = "";
+  private _lastName: string = "";
 
   constructor(view: RegisterView) {
     super(view);
@@ -18,16 +21,24 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
     return this._imageBytes;
   }
 
-  set imageBytes(value: Uint8Array) {
-    this._imageBytes = value;
-  }
-
   get imageFileExtension(): string {
     return this._imageFileExtension;
   }
 
   set imageFileExtension(value: string) {
     this._imageFileExtension = value;
+  }
+
+  set imageBytes(value: Uint8Array) {
+    this._imageBytes = value;
+  }
+
+  set firstName(value: string) {
+    this._firstName = value;
+  }
+
+  set lastName(value: string) {
+    this._lastName = value;
   }
 
   private getFileExtension(file: File): string | undefined {
@@ -64,25 +75,29 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
     }
   }
 
+  protected authenticate(): Promise<[User, AuthToken]> {
+    return this.userService.register(
+      this.firstName,
+      this.lastName,
+      this.alias,
+      this.password,
+      this.imageBytes,
+      this.imageFileExtension,
+    );
+  }
+
+  protected getAuthOperationDescription(): string {
+    return "register";
+  }
+
   public async doRegister(
     firstName: string,
     lastName: string,
     alias: string,
     password: string,
   ) {
-    await this.doFailureReportOperation(async () => {
-      this.isLoading = true;
-      const [user, authToken] = await this.userService.register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        this.imageBytes,
-        this.imageFileExtension,
-      );
-      this.view.updateUserInfo(user, user, authToken, this.rememberMe);
-      this.view.navigate("/");
-    }, "register user");
-    this.isLoading = false;
+    this.firstName = alias;
+    this.lastName = password;
+    await this.doAuthOperation(alias, password, "");
   }
 }
