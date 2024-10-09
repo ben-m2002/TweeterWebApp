@@ -1,6 +1,3 @@
-import { AuthToken } from "tweeter-shared";
-import { PAGE_SIZE } from "../components/mainLayout/UserItemScroller";
-
 export interface View {
   displayErrorMessage: (message: string) => void;
 }
