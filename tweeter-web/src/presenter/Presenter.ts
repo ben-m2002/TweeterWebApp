@@ -7,8 +7,9 @@ export interface MessageView extends View {
   clearLastInfoMessage(): void;
 }
 
-export class Presenter<T extends View> {
+export abstract class Presenter<T extends View> {
   private _view: T;
+  private _itemDescription: string = "";
 
   protected constructor(view: T) {
     this._view = view;
@@ -18,15 +19,22 @@ export class Presenter<T extends View> {
     return this._view;
   }
 
+  public get itemDescription(): string {
+    return this._itemDescription;
+  }
+
+  public set itemDescription(value: string) {
+    this._itemDescription = value;
+  }
+
   public async doFailureReportOperation(
     operation: () => Promise<void>,
-    operationDescription: string,
   ): Promise<void> {
     try {
       await operation();
     } catch (error) {
       this.view.displayErrorMessage(
-        `Failed to ${operationDescription} because of exception: ${error}`,
+        `Failed to ${this.itemDescription} because of exception: ${error}`,
       );
     }
   }

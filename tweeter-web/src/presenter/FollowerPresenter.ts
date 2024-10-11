@@ -7,16 +7,13 @@ export class FollowerPresenter extends UserItemPresenter {
     super(view);
   }
 
-  protected getItemDescription(): string {
-    return "load more followers";
-  }
-
   protected serviceLoadMoreItems(): (
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null,
   ) => Promise<[User[], boolean]> {
-    return this.service.loadMoreFollowers;
+    this.itemDescription = "load more followers";
+    return this.service.loadMoreFollowers.bind(this.service);
   }
 }

@@ -7,16 +7,13 @@ export class FolloweePresenter extends UserItemPresenter {
     super(view);
   }
 
-  protected getItemDescription(): string {
-    return "load more followees";
-  }
-
   protected serviceLoadMoreItems(): (
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null,
   ) => Promise<[User[], boolean]> {
-    return this.service.loadMoreFollowees;
+    this.itemDescription = "load more followees";
+    return this.service.loadMoreFollowees.bind(this.service);
   }
 }

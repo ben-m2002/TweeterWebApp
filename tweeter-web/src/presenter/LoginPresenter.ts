@@ -9,14 +9,11 @@ export class LoginPresenter extends AuthPresenter<LoginView> {
   }
 
   public async doLogin(alias: string, password: string, originalUrl: string) {
+    this.itemDescription = "login";
     await this.doAuthOperation(alias, password, originalUrl);
   }
 
   protected authenticate(): Promise<[User, AuthToken]> {
     return this.userService.login(this.alias, this.password);
-  }
-
-  protected getAuthOperationDescription(): string {
-    return "login";
   }
 }

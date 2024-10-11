@@ -7,16 +7,13 @@ export class FeedPresenter extends StatusItemPresenter {
     super(view);
   }
 
-  protected getItemDescription(): string {
-    return "load more feed items";
-  }
-
   protected serviceLoadMoreItems(): (
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: Status | null,
   ) => Promise<[Status[], boolean]> {
-    return this.service.loadMoreFeedItems;
+    this.itemDescription = "load more feed items";
+    return this.service.loadMoreFeedItems.bind(this.service);
   }
 }

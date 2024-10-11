@@ -7,16 +7,13 @@ export class StoryPresenter extends StatusItemPresenter {
     super(view);
   }
 
-  protected getItemDescription(): string {
-    return "load more story items";
-  }
-
   protected serviceLoadMoreItems(): (
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: Status | null,
   ) => Promise<[Status[], boolean]> {
-    return this.service.loadMoreStoryItems;
+    this.itemDescription = "load more story items";
+    return this.service.loadMoreStoryItems.bind(this.service);
   }
 }

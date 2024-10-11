@@ -1,15 +1,13 @@
 import { StatusService } from "../model/service/StatusService";
 import { AuthToken, Status, User } from "tweeter-shared";
-import { Presenter, View } from "./Presenter";
+import { Presenter } from "./Presenter";
+import { ItemChangePresenter, ItemChangeView } from "./ItemChangePresenter";
 
-export interface PostStatusView extends View {
-  setIsLoading: (isLoading: boolean) => void;
-  displayInfoMessage: (message: string, duration: number) => void;
+export interface PostStatusView extends ItemChangeView {
   setPost: (post: string) => void;
-  clearLastInfoMessage: () => void;
 }
 
-export class PostStatusPresenter extends Presenter<PostStatusView> {
+export class PostStatusPresenter extends ItemChangePresenter<PostStatusView> {
   private _statusService: StatusService;
 
   constructor(view: PostStatusView) {
@@ -28,19 +26,12 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
     currentUser: User,
   ) {
     event.preventDefault();
-    await this.doFailureReportOperation(async () => {
-      this.view.setIsLoading(true);
-      this.view.displayInfoMessage("Posting status...", 0);
-
+    await this.doItemChangeOperation("Posting status...", async () => {
+      this.itemDescription = "post status";
       const status = new Status(post, currentUser!, Date.now());
-
       await this.statusService.postStatus(authToken!, status);
-
       this.view.setPost("");
       this.view.displayInfoMessage("Status posted!", 2000);
-    }, "post status");
-
-    this.view.clearLastInfoMessage();
-    this.view.setIsLoading(false);
+    });
   }
 }

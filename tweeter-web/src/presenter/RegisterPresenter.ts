@@ -86,16 +86,13 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
     );
   }
 
-  protected getAuthOperationDescription(): string {
-    return "register";
-  }
-
   public async doRegister(
     firstName: string,
     lastName: string,
     alias: string,
     password: string,
   ) {
+    this.itemDescription = "register";
     this.firstName = alias;
     this.lastName = password;
     await this.doAuthOperation(alias, password, "");

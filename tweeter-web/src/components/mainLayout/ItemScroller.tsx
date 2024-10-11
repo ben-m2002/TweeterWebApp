@@ -1,35 +1,29 @@
-import { useContext } from "react";
-//import { UserInfoContext } from "../userInfo/UserInfoProvider";
-import { AuthToken, User } from "tweeter-shared";
-import { useState, useEffect } from "react";
+import { ItemPresenter, ItemView } from "../../presenter/ItemPresenter";
+import useToastListener from "../toaster/ToastListenerHook";
+import { ReactNode, useEffect, useState } from "react";
+import { User } from "tweeter-shared";
+import useUserInfo from "../userInfo/UserInfoHook";
+import { UserItemView } from "../../presenter/UserItemPresenter";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UserItem from "../userItem/UserItem";
-import useToastListener from "../toaster/ToastListenerHook";
-import useUserInfo from "../userInfo/UserInfoHook";
-import { FolloweePresenter } from "../../presenter/FolloweePresenter";
-import {
-  UserItemPresenter,
-  UserItemView,
-} from "../../presenter/UserItemPresenter";
-import { FollowerPresenter } from "../../presenter/FollowerPresenter";
 
-export const PAGE_SIZE = 10;
-
-interface Props {
-  presenterGenerator: (view: UserItemView) => UserItemPresenter;
+// T is like User or Status, U is like FolloweeService or FollowerService, V is like UserItem or StatusItem
+interface props<T, U, V extends ReactNode> {
+  presenterGenerator: (view: ItemView<T>) => ItemPresenter<T, U>;
+  itemGenerator: (value: T) => V;
 }
 
-const UserItemScroller = (props: Props) => {
+export const ItemScroller = <T, U, V extends ReactNode>(
+  props: props<T, U, V>,
+) => {
   const { displayErrorMessage } = useToastListener();
-  const [items, setItems] = useState<User[]>([]);
-  const [newItems, setNewItems] = useState<User[]>([]);
-
+  const [items, setItems] = useState<T[]>([]);
+  const [newItems, setNewItems] = useState<T[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
-
   const { displayedUser, authToken } = useUserInfo();
 
-  const listener: UserItemView = {
-    addItems: (newItems: User[]) => setNewItems(newItems),
+  const listener: ItemView<T> = {
+    addItems: (newItems: T[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };
 
@@ -80,12 +74,10 @@ const UserItemScroller = (props: Props) => {
             key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <UserItem value={item} />
+            {props.itemGenerator(item)}
           </div>
         ))}
       </InfiniteScroll>
     </div>
   );
 };
-
-export default UserItemScroller;

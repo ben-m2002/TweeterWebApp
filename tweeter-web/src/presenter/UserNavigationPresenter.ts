@@ -26,8 +26,8 @@ export class UserNavigationPresenter extends Presenter<UserNavigationView> {
   ): Promise<void> {
     event.preventDefault();
     await this.doFailureReportOperation(async () => {
+      this.itemDescription = "navigate to user";
       const alias = this.extractAlias(event.target.toString());
-
       const user = await this.userService.getUser(authToken!, alias);
 
       if (!!user) {
@@ -37,7 +37,7 @@ export class UserNavigationPresenter extends Presenter<UserNavigationView> {
           this.view.setDisplayedUser(user);
         }
       }
-    }, "navigate to user");
+    });
   }
 
   public extractAlias(value: string): string {

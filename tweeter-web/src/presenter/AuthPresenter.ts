@@ -76,25 +76,9 @@ export abstract class AuthPresenter<T extends AuthView> extends Presenter<T> {
       } else {
         this.view.navigate("/");
       }
-    }, this.getAuthOperationDescription());
+    });
     this.isLoading = false;
   }
 
   protected abstract authenticate(): Promise<[User, AuthToken]>;
-
-  protected abstract getAuthOperationDescription(): string;
-
-  public async doLogin(alias: string, password: string, originalUrl: string) {
-    await this.doFailureReportOperation(async () => {
-      this.isLoading = true;
-      const [user, authToken] = await this.userService.login(alias, password);
-      this.view.updateUserInfo(user, user, authToken, this.rememberMe);
-      if (!!originalUrl) {
-        this.view.navigate(originalUrl);
-      } else {
-        this.view.navigate("/");
-      }
-    }, "log user in");
-    this.isLoading = false;
-  }
 }
