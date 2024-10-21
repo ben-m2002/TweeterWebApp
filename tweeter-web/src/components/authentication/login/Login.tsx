@@ -5,12 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
-import useAliasPassword from "../UseAliasPasswordHook.js";
+import useAliasPassword from "../UseAliasPasswordHook";
 import useUserInfo from "../../userInfo/UserInfoHook";
 import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -26,7 +27,9 @@ const Login = (props: Props) => {
     displayErrorMessage: displayErrorMessage,
   };
 
-  const [presenter] = useState(() => new LoginPresenter(listener));
+  const [presenter] = useState(() => {
+    return props.presenter ?? new LoginPresenter(listener);
+  });
 
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;

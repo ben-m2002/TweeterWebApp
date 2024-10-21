@@ -16,6 +16,7 @@ const AuthenticationFields = ({
       <div className="form-floating">
         <input
           type="text"
+          data-testid="aliasInput"
           className="form-control"
           size={50}
           id="aliasInput"
@@ -28,6 +29,7 @@ const AuthenticationFields = ({
       <div className="form-floating mb-3">
         <input
           type="password"
+          data-testid="passwordInput"
           className="form-control bottom"
           id="passwordInput"
           placeholder="Password"
