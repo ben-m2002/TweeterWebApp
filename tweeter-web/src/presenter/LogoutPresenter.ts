@@ -7,19 +7,25 @@ export interface LogoutView extends MessageView {
 }
 
 export class LogoutPresenter extends Presenter<LogoutView> {
-  private _userService: UserService;
+  private _userService: UserService | null = null;
 
   constructor(view: LogoutView) {
     super(view);
-    this._userService = new UserService();
   }
 
   get userService(): UserService {
+    if (this._userService === null) {
+      this._userService = new UserService();
+    }
     return this._userService;
   }
 
+  public setItemDescription(itemDescription: string) {
+    this.itemDescription = itemDescription;
+  }
+
   public async logOut(authToken: AuthToken) {
-    this.itemDescription = "log user out";
+    this.setItemDescription("Logging Out...");
     this.view.displayInfoMessage("Logging Out...", 0);
     await this.doFailureReportOperation(async () => {
       await this.userService.logout(authToken!);

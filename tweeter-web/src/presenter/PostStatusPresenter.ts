@@ -8,15 +8,21 @@ export interface PostStatusView extends ItemChangeView {
 }
 
 export class PostStatusPresenter extends ItemChangePresenter<PostStatusView> {
-  private _statusService: StatusService;
+  private _statusService: StatusService | null = null;
 
   constructor(view: PostStatusView) {
     super(view);
-    this._statusService = new StatusService();
   }
 
   get statusService(): StatusService {
+    if (this._statusService === null) {
+      this._statusService = new StatusService();
+    }
     return this._statusService;
+  }
+
+  public setItemDescription(itemDescription: string) {
+    this.itemDescription = itemDescription;
   }
 
   public async submitPost(
@@ -27,7 +33,7 @@ export class PostStatusPresenter extends ItemChangePresenter<PostStatusView> {
   ) {
     event.preventDefault();
     await this.doItemChangeOperation("Posting status...", async () => {
-      this.itemDescription = "post status";
+      this.setItemDescription("Posting status...");
       const status = new Status(post, currentUser!, Date.now());
       await this.statusService.postStatus(authToken!, status);
       this.view.setPost("");
