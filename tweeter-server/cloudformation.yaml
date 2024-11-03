@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation Template for Lambda Function with Existing Lambda Layer
+
+Parameters:
+  LambdaCodeBucket:
+    Type: String
+    Description: Name of the existing S3 bucket containing the Lambda function code
+    Default: cs340ben-m2002lambdas
+
+
+  # Different for each lambda function
+  LambdaCodeKey:
+    Type: String
+    Description: S3 key for the Lambda function code zip file
+
+  LambdaFunctionName:
+    Type: String
+    Description: Name of the Lambda function to create
+
+  LambdaHandler:
+    Type: String
+    Description: Handler for the Lambda function (e.g., index.handler)
+
+
+  # this is the same for all lambda functions
+  LambdaRuntime:
+    Type: String
+    Description: Runtime environment for the Lambda function (e.g., nodejs20.x)
+    Default: nodejs20.x
+
+  LambdaRoleArn:
+    Type: String
+    Description: ARN of the IAM role that the Lambda function will assume
+    Default: arn:aws:iam::692350947347:role/cs340-lambda
+
+  ExistingLayerArn:
+    Type: String
+    Description: ARN of the existing Lambda layer to associate with the function
+    Default: arn:aws:lambda:us-east-1:692350947347:layer:tweeter-server-dependencies:1
+
+Resources:
+  # Lambda Function
+  MyLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Handler: !Ref LambdaHandler
+      Runtime: !Ref LambdaRuntime
+      Role: !Ref LambdaRoleArn
+      Code:
+        S3Bucket: !Ref LambdaCodeBucket
+        S3Key: !Ref LambdaCodeKey
+      Layers:
+        - !Ref ExistingLayerArn
