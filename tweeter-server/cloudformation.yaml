@@ -7,11 +7,12 @@ Parameters:
     Description: Name of the existing S3 bucket containing the Lambda function code
     Default: cs340ben-m2002lambdas
 
-
-  # Different for each lambda function
   LambdaCodeKey:
     Type: String
     Description: S3 key for the Lambda function code zip file
+    Default: dist.zip
+
+   # Different for each lambda function
 
   LambdaFunctionName:
     Type: String
@@ -36,7 +37,7 @@ Parameters:
   ExistingLayerArn:
     Type: String
     Description: ARN of the existing Lambda layer to associate with the function
-    Default: arn:aws:lambda:us-east-1:692350947347:layer:tweeter-server-dependencies:1
+    Default: arn:aws:lambda:us-east-1:692350947347:layer:tweeter-server-dependencies:3
 
 Resources:
   # Lambda Function

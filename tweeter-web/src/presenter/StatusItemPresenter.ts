@@ -1,4 +1,4 @@
-import { Status } from "tweeter-shared";
+import { Status } from "tweeter-shared/src";
 import { ItemPresenter, ItemView } from "./ItemPresenter";
 import { StatusService } from "../model/service/StatusService";
 

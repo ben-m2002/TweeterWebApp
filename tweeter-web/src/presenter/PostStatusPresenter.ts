@@ -1,5 +1,5 @@
 import { StatusService } from "../model/service/StatusService";
-import { AuthToken, Status, User } from "tweeter-shared";
+import { AuthToken, Status, User } from "tweeter-shared/src";
 import { Presenter } from "./Presenter";
 import { ItemChangePresenter, ItemChangeView } from "./ItemChangePresenter";
 

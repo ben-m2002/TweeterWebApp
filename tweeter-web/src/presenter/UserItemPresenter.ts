@@ -1,4 +1,4 @@
-import { User } from "tweeter-shared";
+import { User } from "tweeter-shared/src";
 import { ItemPresenter, ItemView } from "./ItemPresenter";
 import { FollowService } from "../model/service/FollowService";
 

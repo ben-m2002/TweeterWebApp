@@ -1,4 +1,4 @@
-import { User } from "tweeter-shared";
+import { User } from "tweeter-shared/src";
 import { Link } from "react-router-dom";
 import useUserNavigation from "../UserNavigationHook";
 

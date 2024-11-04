@@ -4,7 +4,6 @@ import { useContext, useState } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import Image from "react-bootstrap/Image";
-import { AuthToken } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
 import { LogoutPresenter, LogoutView } from "../../presenter/LogoutPresenter";

@@ -23,8 +23,6 @@ import { ItemScroller } from "./components/mainLayout/ItemScroller";
 import { Status, User } from "tweeter-shared";
 import StatusItem from "./components/statusItem/statusItem";
 import { StatusService } from "./model/service/StatusService";
-import { ItemPresenter, ItemView } from "./presenter/ItemPresenter";
-import { UserService } from "./model/service/UserService";
 import UserItem from "./components/userItem/UserItem";
 import { FollowService } from "./model/service/FollowService";
 

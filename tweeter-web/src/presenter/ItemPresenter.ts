@@ -1,5 +1,5 @@
 import { Presenter, View } from "./Presenter";
-import { AuthToken } from "tweeter-shared";
+import { AuthToken } from "tweeter-shared/src";
 
 export const PAGE_SIZE: number = 10;
 

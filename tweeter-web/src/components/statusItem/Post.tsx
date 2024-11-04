@@ -1,4 +1,4 @@
-import { Status, Type } from "tweeter-shared";
+import { Status, Type } from "tweeter-shared/src";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 //import { UserInfoContext } from "../userInfo/UserInfoProvider";

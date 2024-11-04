@@ -1,7 +1,7 @@
 import { ItemPresenter, ItemView } from "../../presenter/ItemPresenter";
+import { AuthToken, Status, User } from "tweeter-shared/src";
 import useToastListener from "../toaster/ToastListenerHook";
 import { ReactNode, useEffect, useState } from "react";
-import { User } from "tweeter-shared";
 import useUserInfo from "../userInfo/UserInfoHook";
 import { UserItemView } from "../../presenter/UserItemPresenter";
 import InfiniteScroll from "react-infinite-scroll-component";

@@ -1,5 +1,5 @@
 import { Context, createContext, useState } from "react";
-import { User, AuthToken } from "tweeter-shared";
+import { User, AuthToken } from "tweeter-shared/src";
 
 const CURRENT_USER_KEY: string = "CurrentUserKey";
 const AUTH_TOKEN_KEY: string = "AuthTokenKey";

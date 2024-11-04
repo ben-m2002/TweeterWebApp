@@ -1,5 +1,5 @@
 import { AuthPresenter, AuthView } from "./AuthPresenter";
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared/src";
 
 export interface LoginView extends AuthView {}
 

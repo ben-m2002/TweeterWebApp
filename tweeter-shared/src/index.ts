@@ -20,4 +20,15 @@ export type { UserDto } from "../dto/UserDto";
 //
 export type { PagedUserItemRequest } from "../net/request/PagedUserItemRequest";
 
+//
+//Responses
+//
+
+export type { TweeterResponse } from "../net/response/TweeterResponse";
+export type { PagedUserItemResponse } from "../net/response/PagedUserItemResponse";
+
+//
+// other
+//
+
 export { FakeData } from "./util/FakeData";

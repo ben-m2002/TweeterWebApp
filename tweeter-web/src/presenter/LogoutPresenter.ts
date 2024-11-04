@@ -1,5 +1,5 @@
 import { UserService } from "../model/service/UserService";
-import { AuthToken } from "tweeter-shared";
+import { AuthToken } from "tweeter-shared/src";
 import { MessageView, Presenter, View } from "./Presenter";
 
 export interface LogoutView extends MessageView {

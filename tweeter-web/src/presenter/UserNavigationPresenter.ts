@@ -1,6 +1,6 @@
 import { UserService } from "../model/service/UserService";
 import React from "react";
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared/src";
 import { Presenter, View } from "./Presenter";
 
 export interface UserNavigationView extends View {

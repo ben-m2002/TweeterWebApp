@@ -1,6 +1,6 @@
 import { Buffer } from "buffer";
 import { AuthPresenter, AuthView } from "./AuthPresenter";
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared/src";
 
 export interface RegisterView extends AuthView {
   setImageUrl(url: string): void;

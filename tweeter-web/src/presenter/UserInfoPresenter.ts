@@ -1,5 +1,5 @@
 import { FollowService } from "../model/service/FollowService";
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared/src";
 import { ItemChangePresenter, ItemChangeView } from "./ItemChangePresenter";
 
 export interface UserInfoView extends ItemChangeView {
